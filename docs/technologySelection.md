@@ -36,7 +36,7 @@
 | 対象サイト | 手法 | 備考 |
 |-------------|------|------|
 | Codeforces | **公式 API** | REST API 提供あり。定期的に呼び出してコンテスト情報を取得。 |
-| AtCoder | **スクレイピング（BeautifulSoup / requests）** | API 非公開のため HTML 解析が必要。レート制限や変更に注意。 |
+| AtCoder | **非公式 API** | Atcoder Problems API |
 | OMC | **個別対応** | コンテスト情報取得方法を調査の上、実装方針を決定。 |
 
 ---
