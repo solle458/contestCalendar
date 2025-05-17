@@ -1,6 +1,3 @@
----
-
-```markdown
 # 📘 API仕様書 - Googleカレンダー同期サービス
 
 本ドキュメントは、フロントエンド（Next.js）とバックエンド（Express + TypeScript）間の通信に使用されるREST APIを定義します。
@@ -10,11 +7,9 @@
 - 全APIはHTTPSで保護される
 - 認証方式：**JWTベースのBearerトークン**
 - 認可ヘッダ例：
-```
 
 Authorization: Bearer \<JWT\_TOKEN>
 
-````
 - すべてのレスポンスは `application/json`
 
 ---
