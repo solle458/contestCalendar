@@ -1,6 +1,6 @@
-# 📘 API仕様書 - Googleカレンダー同期サービス
+# 📘 API仕様書 - 競技プログラミングコンテストカレンダー同期サービス
 
-本ドキュメントは、フロントエンド（Next.js）とバックエンド（Express + TypeScript）間の通信に使用されるREST APIを定義します。
+本ドキュメントは、フロントエンド（Next.js）とバックエンド（FastAPI）間の通信に使用されるREST APIを定義します。
 
 ## 🔐 認証と共通仕様
 
@@ -8,70 +8,46 @@
 - 認証方式：**JWTベースのBearerトークン**
 - 認可ヘッダ例：
 
-Authorization: Bearer \<JWT\_TOKEN>
+```
+Authorization: Bearer <JWT_TOKEN>
+```
 
 - すべてのレスポンスは `application/json`
 
 ---
 
-## 1. 認証関連 API
+## 1. コンテスト API
 
-### 🔁 `POST /api/auth/google`
+### 🏁 `GET /api/contests`
 
-Google OAuth2 認証を開始する。
+指定されたプラットフォームの今後のコンテスト一覧を取得
 
-- **リクエスト**
-- Body: なし
-- Google OAuth のURLにリダイレクトされる
+* **クエリパラメータ（任意）**
 
-- **レスポンス**
-- リダイレクトのためレスポンスなし
-
----
-
-### ✅ `GET /api/auth/callback?code=...`
-
-GoogleのOAuth認証完了後のリダイレクトエンドポイント
-
-- **処理**
-- `code` を受け取りアクセストークン／リフレッシュトークンを取得
-- DBに保存し、JWTを発行して返却
-
-- **レスポンス**
-```json
-{
-"token": "<JWT>",
-"user": {
-  "id": "...",
-  "email": "...",
-  "name": "..."
-}
-}
-````
-
----
-
-## 2. ユーザー API
-
-### 👤 `GET /api/user/me`
-
-現在ログイン中のユーザー情報を取得
+  * `platform`: `atcoder` / `codeforces` / `omc`
 
 * **認証**：必要
 
 * **レスポンス**
 
 ```json
-{
-  "id": "user-uuid",
-  "email": "user@example.com",
-  "name": "User Name"
-}
+[
+  {
+    "id": "abc350",
+    "platform": "atcoder",
+    "title": "AtCoder Beginner Contest 350",
+    "start_time": "2025-05-24T12:00:00Z",
+    "duration_min": 100,
+    "url": "https://atcoder.jp/contests/abc350"
+  }
+]
 ```
 
 ---
 
-### ⚙️ `GET /api/user/settings`
+## 2. 設定 API
+
+### ⚙️ `GET /api/settings`
 
 ユーザーのコンテスト同期設定一覧を取得
 
@@ -82,32 +58,35 @@ GoogleのOAuth認証完了後のリダイレクトエンドポイント
 ```json
 [
   {
+    "id": 1,
     "platform": "atcoder",
-    "notifyBeforeMinutes": 30,
-    "active": true
+    "notify_before_min": 30,
+    "enabled": true
   },
   {
+    "id": 2,
     "platform": "codeforces",
-    "notifyBeforeMinutes": 60,
-    "active": false
+    "notify_before_min": 60,
+    "enabled": false
   }
 ]
 ```
 
 ---
 
-### 🛠️ `POST /api/user/settings`
+### 🛠️ `PUT /api/settings`
 
-ユーザーの設定を新規作成または更新する
+ユーザーの設定を更新する
 
 * **認証**：必要
 * **リクエスト**
 
 ```json
 {
+  "id": 1,
   "platform": "atcoder",
-  "notifyBeforeMinutes": 15,
-  "active": true
+  "notify_before_min": 15,
+  "enabled": true
 }
 ```
 
@@ -115,42 +94,16 @@ GoogleのOAuth認証完了後のリダイレクトエンドポイント
 
 ```json
 {
-  "message": "Settings updated"
+  "id": 1,
+  "platform": "atcoder",
+  "notify_before_min": 15,
+  "enabled": true
 }
 ```
 
 ---
 
-## 3. コンテスト API
-
-### 🏁 `GET /api/contests`
-
-指定されたプラットフォームの今後のコンテスト一覧を取得
-
-* **クエリパラメータ（任意）**
-
-  * `platform`: `atcoder` / `codeforces` / `omc`
-
-* **認証**：不要（パブリックでも可）
-
-* **レスポンス**
-
-```json
-[
-  {
-    "id": "abc350",
-    "platform": "atcoder",
-    "title": "AtCoder Beginner Contest 350",
-    "startTime": "2025-05-24T12:00:00Z",
-    "durationMin": 100,
-    "url": "https://atcoder.jp/contests/abc350"
-  }
-]
-```
-
----
-
-## 4. 同期 API
+## 3. 同期 API
 
 ### 🔄 `POST /api/sync/calendar`
 
@@ -158,44 +111,34 @@ GoogleのOAuth認証完了後のリダイレクトエンドポイント
 
 * **認証**：必要
 
-* **リクエストボディ**：なし（設定はDBに登録済のものを使用）
+* **リクエストボディ**：
+
+```json
+{
+  "refresh_token": "...",
+  "id_token": "..."
+}
+```
 
 * **レスポンス**
 
 ```json
 {
-  "synced": [
-    "abc350",
-    "cf1234"
-  ],
-  "skipped": [
-    "abc349" // 既に同期済み
-  ]
+  "success": true,
+  "message": "3件のコンテストをカレンダーに同期しました",
+  "synced_contests": 3
 }
 ```
 
 ---
 
-## 5. 管理者API（オプション）
-
-### 👮 `GET /api/admin/users`
-
-ユーザー一覧の取得（管理者用）
-
-* **認証**：必要（管理者トークン）
-
----
-
-## 6. エラーレスポンス仕様
+## 4. エラーレスポンス仕様
 
 共通のエラーフォーマットを使用：
 
 ```json
 {
-  "error": {
-    "code": 401,
-    "message": "Unauthorized"
-  }
+  "detail": "エラーメッセージ"
 }
 ```
 
@@ -209,7 +152,7 @@ GoogleのOAuth認証完了後のリダイレクトエンドポイント
 
 ---
 
-## 🔚 今後の拡張候補API
+## 5. 今後の拡張候補API
 
 | エンドポイント                        | 説明                                |
 | ------------------------------ | --------------------------------- |

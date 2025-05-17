@@ -1,8 +1,8 @@
-# 技術選定書 - 競技プログラミングコンテスト Googleカレンダー同期サービス
+# 技術選定書 - 競技プログラミングコンテストカレンダー同期サービス
 
 ## 目的
 
-本書は、「AtCoder、Codeforces、OMC などの競技プログラミングコンテストを Google カレンダーに自動登録する Web サービス」の技術スタックを選定するための指針を示します。スケーラビリティ、保守性、セキュリティ、開発効率を考慮して決定します。
+本書は、「AtCoder、Codeforces、OMC などの競技プログラミングコンテストを Google カレンダーに自動登録する Web サービス」の技術スタックを選定するための指針を示します。スケーラビリティ、保守性、セキュリティ、開発効率を考慮して決定しました。
 
 ---
 
@@ -10,10 +10,11 @@
 
 | 項目 | 技術 | 理由 |
 |------|------|------|
-| フレームワーク | **Next.js（React + TypeScript）** | SSR/CSR両対応。Google認証との親和性が高く、Vercelとの連携も容易。 |
+| フレームワーク | **Next.js 14（App Router）** | SSR/CSR両対応。Google認証との親和性が高く、Vercelとの連携も容易。 |
 | 言語 | **TypeScript** | 型安全なコードにより保守性とバグ耐性が向上。 |
 | UI ライブラリ | **Tailwind CSS** + **shadcn/ui** | デザイン効率と一貫性を確保しつつ、カスタマイズも容易。 |
-| 認証 UI | **next-auth** | Google OAuth2.0 連携が容易。セッション管理も自動化されている。 |
+| 認証 | **NextAuth.js** | Google OAuth2.0 連携が容易。セッション管理も自動化されている。 |
+| 状態管理 | **React Hooks** | シンプルな状態管理で十分な規模のアプリケーション。 |
 
 ---
 
@@ -21,10 +22,12 @@
 
 | 項目 | 技術 | 理由 |
 |------|------|------|
-| 実装方法 | **Next.js API Routes** または **Express (Node.js)** | Next.js で一体化可能。必要に応じて Express を外出し可能。 |
-| 言語 | **TypeScript（Node.js）** | フロントと統一することで学習・保守コストを削減。 |
-| Google連携 | **googleapis ライブラリ（Node.js）** | Google公式。認証からカレンダー操作まで対応。 |
-| ジョブ管理 | **GitHub Actions**（初期） / **Cloud Scheduler**（拡張） | 定期的なコンテスト取得・同期処理に活用。無料枠で実行可能。 |
+| フレームワーク | **FastAPI** | 高速で型安全なAPIフレームワーク。自動ドキュメント生成機能も便利。 |
+| 言語 | **Python 3.11+** | 豊富なライブラリと開発効率の高さ。Google API連携も容易。 |
+| ORM | **SQLAlchemy** | 柔軟で強力なPythonのORM。複雑なクエリも記述可能。 |
+| マイグレーション | **Alembic** | SQLAlchemyと連携したマイグレーション管理ツール。 |
+| バリデーション | **Pydantic** | 型チェックとバリデーションを統合。FastAPIとの親和性が高い。 |
+| Google連携 | **Google API Client Library for Python** | Google公式。認証からカレンダー操作まで対応。 |
 
 ---
 
@@ -33,7 +36,7 @@
 | 対象サイト | 手法 | 備考 |
 |-------------|------|------|
 | Codeforces | **公式 API** | REST API 提供あり。定期的に呼び出してコンテスト情報を取得。 |
-| AtCoder | **スクレイピング（cheerio / Puppeteer）** | API 非公開のため HTML 解析が必要。レート制限や変更に注意。 |
+| AtCoder | **スクレイピング（BeautifulSoup / requests）** | API 非公開のため HTML 解析が必要。レート制限や変更に注意。 |
 | OMC | **個別対応** | コンテスト情報取得方法を調査の上、実装方針を決定。 |
 
 ---
@@ -42,8 +45,9 @@
 
 | 項目 | 技術 | 理由 |
 |------|------|------|
-| サービス | **Supabase（PostgreSQL）** | オープンソースで拡張性が高く、Next.jsとの親和性も良好。 |
-| ORM | **Prisma** | 型安全で柔軟なクエリ記述が可能。開発生産性向上に寄与。 |
+| RDBMS | **PostgreSQL** | 高機能でオープンソース。JSON対応や豊富な機能を持つ。 |
+| ORM | **SQLAlchemy** | Pythonとの親和性が高く、柔軟なクエリ記述が可能。 |
+| マイグレーション | **Alembic** | SQLAlchemyと連携して使用する標準的なマイグレーションツール。 |
 
 ---
 
@@ -51,9 +55,9 @@
 
 | 項目 | 技術 | 理由 |
 |------|------|------|
-| フロント & API | **Vercel** | Next.jsとシームレス。自動デプロイやPreview Deploy対応。 |
-| バックエンド外出し（任意） | **Render / Railway** | Express等のNode.jsサーバを独立運用する場合に使用。 |
-| ジョブ実行 | **GitHub Actions** | 定期実行やデータ同期処理に対応。無料で簡単に開始可能。 |
+| フロントエンド | **Vercel** | Next.jsとシームレス。自動デプロイやPreview Deploy対応。 |
+| バックエンド | **Docker + クラウドサービス** | コンテナ化によりどの環境でも同じ動作を保証。 |
+| データベース | **クラウドサービスのマネージドDB** | 運用負荷を軽減し、スケーラビリティを確保。 |
 
 ---
 
@@ -70,9 +74,9 @@
 
 | 項目 | 技術 | 理由 |
 |------|------|------|
-| エラーログ管理 | **Vercel Logging / Sentry（将来拡張）** | 本番環境の監視・トラブル対応に有効。 |
-| モノレポ対応（任意） | **Turborepo** | フロントエンドとバックエンドを一元管理可能。 |
-| フォーマット | **ESLint + Prettier** | コードスタイルの統一。 |
+| エラーログ管理 | **カスタムロガー / Sentry（将来拡張）** | 本番環境の監視・トラブル対応に有効。 |
+| フォーマット | **ESLint + Prettier（フロントエンド）** | コードスタイルの統一。 |
+| フォーマット | **Black + isort（バックエンド）** | Pythonコードのフォーマット統一。 |
 
 ---
 
@@ -85,16 +89,15 @@
 
 ---
 
-## MVP向け 技術構成まとめ
+## 現在の技術構成まとめ
 
 | 項目 | 技術 |
 |------|------|
-| フロント | Next.js（TypeScript）+ TailwindCSS + next-auth |
-| バックエンド | Next.js API Routes（Node.js）または Express |
-| データベース | Supabase（PostgreSQL）+ Prisma |
-| Google連携 | googleapis（OAuth 2.0 + Calendar API） |
-| ジョブ処理 | GitHub Actions |
-| ホスティング | Vercel |
+| フロント | Next.js 14（TypeScript）+ TailwindCSS + shadcn/ui + NextAuth.js |
+| バックエンド | FastAPI（Python 3.11+）+ SQLAlchemy + Alembic |
+| データベース | PostgreSQL |
+| Google連携 | Google API Client Library for Python |
+| ホスティング | Vercel（フロントエンド）+ Docker（バックエンド） |
 | CI/CD | GitHub Actions |
 
 ---

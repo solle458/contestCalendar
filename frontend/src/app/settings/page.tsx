@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
-import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -17,7 +16,6 @@ import {
   cancelValidation,
   filterValidationErrors,
   type ValidationError,
-  getValidationCacheStats,
 } from "@/lib/validation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -56,14 +54,14 @@ const SettingCard = React.memo(function SettingCard({
   const handleNotifyTimeChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = parseInt(e.target.value) || 0;
-      onSettingChange(setting.platform, "notifyBeforeMinutes", value);
+      onSettingChange(setting.platform, "notify_before_min", value);
     },
     [setting.platform, onSettingChange]
   );
 
   const handleActiveChange = useCallback(
     (checked: boolean) => {
-      onSettingChange(setting.platform, "active", checked);
+      onSettingChange(setting.platform, "enabled", checked);
     },
     [setting.platform, onSettingChange]
   );
@@ -75,11 +73,11 @@ const SettingCard = React.memo(function SettingCard({
           <span>{setting.platform.toUpperCase()}</span>
           <FormField
             label="有効/無効"
-            error={getFieldError("active")}
+            error={getFieldError("enabled")}
             className="flex items-center space-x-2"
           >
             <Switch
-              checked={setting.active}
+              checked={setting.enabled}
               onCheckedChange={handleActiveChange}
               disabled={isSaving}
             />
@@ -92,7 +90,7 @@ const SettingCard = React.memo(function SettingCard({
             label="通知時間"
             error={
               notifyTimeErrors[setting.platform] ||
-              getFieldError("notifyBeforeMinutes")
+              getFieldError("notify_before_min")
             }
             description="コンテスト開始前の通知時間を設定"
             required
@@ -102,7 +100,7 @@ const SettingCard = React.memo(function SettingCard({
                 type="number"
                 min="0"
                 max="1440"
-                value={setting.notifyBeforeMinutes}
+                value={setting.notify_before_min}
                 onChange={handleNotifyTimeChange}
                 className={cn(
                   "w-24",
@@ -114,20 +112,20 @@ const SettingCard = React.memo(function SettingCard({
             </div>
           </FormField>
 
-          {getFieldWarning("notifyBeforeMinutes") && (
+          {getFieldWarning("notify_before_min") && (
             <Alert variant="default" className="bg-blue-50">
               <InfoIcon className="h-4 w-4 text-blue-500" />
               <AlertDescription className="text-blue-700">
-                {getFieldWarning("notifyBeforeMinutes")}
+                {getFieldWarning("notify_before_min")}
               </AlertDescription>
             </Alert>
           )}
 
-          {getFieldWarning("active") && (
+          {getFieldWarning("enabled") && (
             <Alert variant="default" className="bg-blue-50">
               <InfoIcon className="h-4 w-4 text-blue-500" />
               <AlertDescription className="text-blue-700">
-                {getFieldWarning("active")}
+                {getFieldWarning("enabled")}
               </AlertDescription>
             </Alert>
           )}
@@ -138,7 +136,6 @@ const SettingCard = React.memo(function SettingCard({
 });
 
 export default function SettingsPage() {
-  const { data: session } = useSession();
   const [settings, setSettings] = useState<UserSettings[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -149,7 +146,7 @@ export default function SettingsPage() {
 
   // 前回の設定値を保持
   const previousSettingsRef = useRef<UserSettings[]>([]);
-  const api = useMemo(() => createApiClient(session?.accessToken), [session?.accessToken]);
+  const api = useMemo(() => createApiClient(), []);
 
   // コンポーネントのアンマウント時にクリーンアップ
   useEffect(() => {
@@ -168,7 +165,6 @@ export default function SettingsPage() {
 
     const fetchSettings = async () => {
       try {
-        logger.debug('Fetching settings');
         const data = await api.settings.list();
         if (isMounted) {
           setSettings(data);
@@ -181,7 +177,6 @@ export default function SettingsPage() {
         }
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") {
-          logger.debug('Settings fetch aborted');
           return;
         }
         logger.error('Failed to fetch settings', { error });
@@ -206,14 +201,13 @@ export default function SettingsPage() {
   // 設定変更ハンドラを最適化
   const handleSettingChange = useCallback(
     (platform: string, field: keyof UserSettings, value: UserSettings[keyof UserSettings]) => {
-      logger.debug('Setting changed', { platform, field, value });
       setSettings((prev) => {
         const newSettings = prev.map((setting) =>
           setting.platform === platform ? { ...setting, [field]: value } : setting
         );
 
         // 通知時間の変更時は即時バリデーション
-        if (field === "notifyBeforeMinutes") {
+        if (field === "notify_before_min") {
           const error = validateNotifyTime(value as number, platform);
           if (error?.type === "custom") {
             logger.warn('Non-recommended notify time', { platform, value, error });
@@ -240,17 +234,11 @@ export default function SettingsPage() {
         );
 
         if (hasChanges) {
-          logger.debug('Starting validation');
           setIsValidating(true);
           debouncedValidate(newSettings, (result) => {
             setErrors(result.errors);
             setWarnings(result.warnings || []);
             setIsValidating(false);
-            logger.debug('Validation completed', { 
-              isValid: result.isValid,
-              errorCount: result.errors.length,
-              warningCount: result.warnings?.length || 0
-            });
           });
         }
 
@@ -301,7 +289,6 @@ export default function SettingsPage() {
       clearValidationCache();
     } catch (error) {
       logger.error('Failed to save settings', { error });
-      console.error("Failed to save settings:", error);
       toast.error("設定の保存に失敗しました");
     } finally {
       setIsSaving(false);
@@ -352,18 +339,6 @@ export default function SettingsPage() {
       ),
     [errors, warnings]
   );
-
-  // キャッシュの状態を監視（デバッグ用）
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const stats = getValidationCacheStats();
-      if (stats.size > stats.maxSize * 0.8) {
-        logger.warn('Validation cache is nearly full', { stats });
-      }
-    }, 60000); // 1分ごとにチェック
-
-    return () => clearInterval(interval);
-  }, []);
 
   if (isLoading) {
     return (

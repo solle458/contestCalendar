@@ -1,0 +1,84 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- カレンダー背景 -->
+  <rect x="100" y="150" width="600" height="500" rx="20" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="10"/>
+  
+  <!-- カレンダーヘッダー -->
+  <rect x="100" y="150" width="600" height="80" rx="20" fill="#3B82F6"/>
+  <rect x="100" y="150" width="600" height="80" rx="20" fill="url(#header-gradient)"/>
+  
+  <!-- 月表示 -->
+  <text x="400" y="200" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">7月 2023</text>
+  
+  <!-- 曜日ヘッダー -->
+  <text x="157" y="270" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#64748B" text-anchor="middle">日</text>
+  <text x="243" y="270" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#64748B" text-anchor="middle">月</text>
+  <text x="329" y="270" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#64748B" text-anchor="middle">火</text>
+  <text x="414" y="270" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#64748B" text-anchor="middle">水</text>
+  <text x="500" y="270" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#64748B" text-anchor="middle">木</text>
+  <text x="586" y="270" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#64748B" text-anchor="middle">金</text>
+  <text x="671" y="270" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#64748B" text-anchor="middle">土</text>
+  
+  <!-- 日付グリッド線 -->
+  <line x1="200" y1="240" x2="200" y2="650" stroke="#E2E8F0" stroke-width="2"/>
+  <line x1="286" y1="240" x2="286" y2="650" stroke="#E2E8F0" stroke-width="2"/>
+  <line x1="372" y1="240" x2="372" y2="650" stroke="#E2E8F0" stroke-width="2"/>
+  <line x1="458" y1="240" x2="458" y2="650" stroke="#E2E8F0" stroke-width="2"/>
+  <line x1="544" y1="240" x2="544" y2="650" stroke="#E2E8F0" stroke-width="2"/>
+  <line x1="630" y1="240" x2="630" y2="650" stroke="#E2E8F0" stroke-width="2"/>
+  
+  <line x1="100" y1="300" x2="700" y2="300" stroke="#E2E8F0" stroke-width="2"/>
+  <line x1="100" y1="370" x2="700" y2="370" stroke="#E2E8F0" stroke-width="2"/>
+  <line x1="100" y1="440" x2="700" y2="440" stroke="#E2E8F0" stroke-width="2"/>
+  <line x1="100" y1="510" x2="700" y2="510" stroke="#E2E8F0" stroke-width="2"/>
+  <line x1="100" y1="580" x2="700" y2="580" stroke="#E2E8F0" stroke-width="2"/>
+  
+  <!-- 日付 -->
+  <text x="157" y="330" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">25</text>
+  <text x="243" y="330" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">26</text>
+  <text x="329" y="330" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">27</text>
+  <text x="414" y="330" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">28</text>
+  <text x="500" y="330" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">29</text>
+  <text x="586" y="330" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">30</text>
+  <text x="671" y="330" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">1</text>
+  
+  <text x="157" y="400" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">2</text>
+  <text x="243" y="400" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">3</text>
+  <text x="329" y="400" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">4</text>
+  <text x="414" y="400" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">5</text>
+  <text x="500" y="400" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">6</text>
+  <text x="586" y="400" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">7</text>
+  <text x="671" y="400" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">8</text>
+  
+  <text x="157" y="470" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">9</text>
+  <text x="243" y="470" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">10</text>
+  <text x="329" y="470" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">11</text>
+  <text x="414" y="470" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">12</text>
+  <text x="500" y="470" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">13</text>
+  <text x="586" y="470" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">14</text>
+  <text x="671" y="470" font-family="Arial, sans-serif" font-size="20" fill="#475569" text-anchor="middle">15</text>
+  
+  <!-- イベント表示 -->
+  <!-- AtCoderイベント -->
+  <rect x="243" y="410" width="170" height="30" rx="5" fill="#EF4444" opacity="0.8"/>
+  <text x="328" y="430" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">AtCoder Regular Contest</text>
+  
+  <!-- Codeforcesイベント -->
+  <rect x="500" y="410" width="170" height="30" rx="5" fill="#3B82F6" opacity="0.8"/>
+  <text x="585" y="430" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">Codeforces Round</text>
+  
+  <!-- OMCイベント -->
+  <rect x="329" y="480" width="170" height="30" rx="5" fill="#10B981" opacity="0.8"/>
+  <text x="414" y="500" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">OMC Contest</text>
+  
+  <!-- 装飾要素 -->
+  <circle cx="650" cy="200" r="10" fill="#FCD34D"/>
+  <circle cx="680" cy="200" r="10" fill="#34D399"/>
+  
+  <!-- グラデーション定義 -->
+  <defs>
+    <linearGradient id="header-gradient" x1="0" y1="0" x2="100%" y2="0">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+</svg> 

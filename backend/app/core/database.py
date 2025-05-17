@@ -6,14 +6,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://contest_calendar:contest_calendar@localhost:5432/contest_calendar")
+# データベースURL
+DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://contest_calendar:contest_calendar@localhost:5432/contest_calendar")
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# エンジンの作成
+engine = create_engine(DATABASE_URL)
+
+# セッションの作成
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# モデルのベースクラス
 Base = declarative_base()
 
-# データベースセッションの依存性
+# 依存関係注入用の関数
 def get_db():
     db = SessionLocal()
     try:
