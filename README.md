@@ -1,1 +1,1 @@
-# -contestCalendar
+# contestCalendar
